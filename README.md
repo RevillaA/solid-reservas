@@ -17,22 +17,22 @@ npm run dev
 ## SRP - Single Responsibility Principle
 
 ### Antes
-El módulo de productos concentraba varias responsabilidades en una sola clase.
-`ProductBloc` no solo coordinaba las operaciones del caso de uso, sino que también
-guardaba productos y enviaba notificaciones al cliente. Eso hacía que cualquier cambio
-en persistencia o en notificaciones obligara a modificar la misma clase.
+El módulo de productos concentraba varias responsabilidades dentro de una misma clase.
+`ProductBloc` se encargaba de coordinar el flujo principal, guardar productos y también
+enviar notificaciones al cliente. Esa mezcla hacía que un cambio en persistencia o en
+comunicación afectara directamente al mismo componente.
 
 ### Cambio realizado
-Se separó la lógica en componentes con responsabilidades específicas.
-La persistencia de productos se movió a `ProductRepository`, la notificación al cliente
-se trasladó a `CustomerNotifier` y `ProductBloc` quedó únicamente como punto de
-coordinación entre esas piezas.
+Se separaron las responsabilidades en clases más específicas.
+La gestión de almacenamiento pasó a `ProductRepository`, la notificación al cliente
+se movió a `CustomerNotifier` y `ProductBloc` quedó únicamente como coordinador del
+caso de uso.
 
 ### Después
-Cada módulo tiene una responsabilidad clara y única.
-`ProductBloc` orquesta, `ProductRepository` gestiona el almacenamiento y
-`CustomerNotifier` encapsula el envío de mensajes. Esto reduce el acoplamiento
-y hace más fácil mantener o cambiar una parte sin afectar las demás.
+Cada clase tiene una responsabilidad más clara y limitada.
+`ProductBloc` orquesta el proceso, `ProductRepository` administra los productos y
+`CustomerNotifier` encapsula el envío de mensajes. Esto mejora la legibilidad,
+reduce el acoplamiento y facilita el mantenimiento del módulo.
 
 ## OCP - Open/Closed Principle
 
