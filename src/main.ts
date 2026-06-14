@@ -3,6 +3,7 @@ import { ProductBloc } from './01-srp/product-bloc'
 import { NewsService, PhotosService } from './02-ocp/news-service'
 import { Audi, Ford, Honda, Tesla, Toyota, VehicleManager } from './03-lsp/vehicle-manager'
 import { BirdCatalog, Hummingbird, Ostrich, Toucan } from './04-isp/bird-catalog'
+import { LocalDatabaseService } from './data/local-database'
 import { PostService } from './05-dip/post-service'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
@@ -10,7 +11,7 @@ const app = document.querySelector<HTMLDivElement>('#app')!
 const productBloc = new ProductBloc()
 const newsService = new NewsService()
 const photosService = new PhotosService()
-const postService = new PostService()
+const postService = new PostService(new LocalDatabaseService())
 const vehicles = [
   new Tesla('Model X'),
   new Audi('A4'),

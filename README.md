@@ -93,3 +93,21 @@ comportamiento que quiere ejecutar.
 Las interfaces quedaron más precisas y cada módulo depende solo de lo que realmente usa.
 Las aves ya no implementan métodos innecesarios, se evita comportamiento artificial
 y el diseño queda preparado para agregar nuevas especies respetando sus capacidades reales.
+
+## DIP - Dependency Inversion Principle
+
+### Antes
+El servicio de publicaciones dependía directamente de una implementación concreta.
+`PostService` creaba internamente una instancia de `LocalDatabaseService`, por lo que
+el módulo de alto nivel quedaba atado al detalle técnico de una fuente específica de datos.
+
+### Cambio realizado
+Se introdujo la abstracción `PostProvider` para representar el contrato de obtención de posts.
+`PostService` ahora recibe esa dependencia desde afuera por constructor y trabaja solo contra
+la interfaz. Tanto `LocalDatabaseService` como `JsonDatabaseService` implementan ese contrato.
+
+### Después
+El módulo principal quedó desacoplado de las implementaciones concretas.
+`PostService` depende de una abstracción y puede operar con cualquier proveedor compatible
+sin modificar su lógica interna. Esto reduce el acoplamiento y facilita cambiar la fuente
+de datos sin reabrir el servicio.
