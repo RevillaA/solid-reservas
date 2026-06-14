@@ -74,3 +74,22 @@ Las implementaciones pueden sustituirse sin alterar el funcionamiento del sistem
 `VehicleManager` ahora trabaja contra el contrato `Vehicle` y puede procesar cualquier
 vehículo derivado sin conocer su tipo concreto. Esto respeta el principio de sustitución,
 simplifica el flujo del cliente y hace más mantenible la jerarquía.
+
+## ISP - Interface Segregation Principle
+
+### Antes
+El catálogo de aves utilizaba una interfaz demasiado grande.
+Todas las aves debían implementar `eat()`, `fly()` y `swim()`, incluso cuando alguna
+de esas capacidades no correspondía a su comportamiento real. Eso forzaba métodos vacíos
+o excepciones en clases como `Toucan`, `Hummingbird` y `Ostrich`.
+
+### Cambio realizado
+La interfaz original se dividió en contratos más pequeños y específicos:
+`EaterBird`, `FlyingBird` y `SwimmingBird`. Cada clase ahora implementa únicamente
+las capacidades que necesita y `BirdCatalog` trabaja con listas separadas según el
+comportamiento que quiere ejecutar.
+
+### Después
+Las interfaces quedaron más precisas y cada módulo depende solo de lo que realmente usa.
+Las aves ya no implementan métodos innecesarios, se evita comportamiento artificial
+y el diseño queda preparado para agregar nuevas especies respetando sus capacidades reales.

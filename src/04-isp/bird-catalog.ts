@@ -1,39 +1,47 @@
-
 /**
- * VIOLACIÓN AL PRINCIPIO DE SEGREGACIÓN DE INTERFAZ (ISP)
- * 
- * El catálogo de fauna define una interfaz "gorda" que obliga a las aves 
- * a implementar métodos que no les corresponden según su naturaleza.
+ * Los contratos se separan por capacidad para que cada ave implemente
+ * solo el comportamiento que realmente necesita.
  */
-
-interface Bird {
+interface EaterBird {
     eat(): void;
+}
+
+interface FlyingBird {
     fly(): void;
+}
+
+interface SwimmingBird {
     swim(): void;
 }
 
-export class Toucan implements Bird {
-    public eat() { console.log('El Tucán está comiendo frutas.'); }
-    public fly() { console.log('El Tucán vuela sobre la selva.'); }
-    public swim() { console.log('El Tucán no suele nadar, pero implemento el método vacío.'); }
+export class Toucan implements EaterBird, FlyingBird {
+    public eat() { console.log('El Tucan esta comiendo frutas.'); }
+    public fly() { console.log('El Tucan vuela sobre la selva.'); }
 }
 
-export class Hummingbird implements Bird {
-    public eat() { console.log('El Colibrí busca néctar.'); }
-    public fly() { console.log('El Colibrí aletea rápidamente.'); }
-    public swim() { throw new Error('Un colibrí no puede nadar'); }
+export class Hummingbird implements EaterBird, FlyingBird {
+    public eat() { console.log('El Colibri busca nectar.'); }
+    public fly() { console.log('El Colibri aletea rapidamente.'); }
 }
 
-/**
- * VIOLACIÓN FLAGRANTE: El Avestruz es un ave, pero NO VUELA.
- * La interfaz Bird le obliga a implementar fly(), causando una excepción en tiempo de ejecución
- * o un comportamiento inesperado.
- */
-export class Ostrich implements Bird {
+export class Ostrich implements EaterBird, SwimmingBird {
     public eat() { console.log('El Avestruz come hierbas.'); }
-    public fly() { 
-        // ¡Error! Violación de ISP.
-        throw new Error('Las avestruces NO vuelan.'); 
-    }
     public swim() { console.log('El Avestruz puede nadar si es necesario.'); }
+}
+
+export class BirdCatalog {
+
+    // Cada flujo depende solo del contrato que realmente utiliza.
+    static showEating(birds: EaterBird[]) {
+        birds.forEach(bird => bird.eat());
+    }
+
+    static showFlying(birds: FlyingBird[]) {
+        birds.forEach(bird => bird.fly());
+    }
+
+    static showSwimming(birds: SwimmingBird[]) {
+        birds.forEach(bird => bird.swim());
+    }
+
 }
