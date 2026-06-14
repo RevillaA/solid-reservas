@@ -1,10 +1,13 @@
 import './style.css'
 import { ProductBloc } from './01-srp/product-bloc'
+import { NewsService, PhotosService } from './02-ocp/news-service'
 import { PostService } from './05-dip/post-service'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
 const productBloc = new ProductBloc()
+const newsService = new NewsService()
+const photosService = new PhotosService()
 const postService = new PostService()
 
 app.innerHTML = `
@@ -19,6 +22,13 @@ async function bootstrap() {
   productBloc.notifyCustomer('cliente@correo.com', 'Tu compra fue registrada')
 
   console.log('Producto recuperado:', savedProduct)
+
+  // Prueba del modulo OCP manteniendo la misma funcionalidad observable.
+  const news = await newsService.getLatestNews()
+  const gallery = await photosService.getGallery()
+
+  console.log('Noticias cargadas:', news.slice(0, 2))
+  console.log('Galeria cargada:', gallery.slice(0, 2))
 
   // Prueba del modulo DIP para confirmar que el proyecto ejecuta codigo visible.
   const posts = await postService.getPosts()

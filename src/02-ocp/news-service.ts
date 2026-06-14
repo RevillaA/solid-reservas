@@ -1,25 +1,40 @@
-/**
- * VIOLACION AL PRINCIPIO DE ABIERTO/CERRADO (OCP)
- *
- * En este modulo de noticias de la reserva, el servicio depende directamente
- * de un mecanismo concreto de acceso HTTP. Si quisieramos usar otra estrategia,
- * tendriamos que modificar este codigo interno.
- */
+import { ApiResourceService } from './api-resource-service';
 
-export class NewsService {
-    // VIOLACION: Dependencia rigida de fetch()
-    // Si la API cambia o queremos cambiar de cliente HTTP, este codigo debe modificarse.
-    async getLatestNews() {
-        console.log('Obteniendo noticias de la reserva biologica...');
-        const resp = await fetch('https://jsonplaceholder.typicode.com/posts');
-        return resp.json();
-    }
+type NewsItem = {
+    id: number;
+    title: string;
+    body: string;
 }
 
-export class PhotosService {
-    async getGallery() {
-        // Otra violacion repetida: si manana cambia el cliente HTTP, hay que tocar todos los archivos que lo usan.
-        const resp = await fetch('https://jsonplaceholder.typicode.com/photos');
-        return resp.json();
+type PhotoItem = {
+    id: number;
+    title: string;
+    url: string;
+}
+
+export class NewsService extends ApiResourceService<NewsItem[]> {
+
+    constructor() {
+        super('https://jsonplaceholder.typicode.com/posts');
     }
+
+    // El servicio conserva su caso de uso y delega la obtencion comun al modulo base.
+    async getLatestNews() {
+        console.log('Obteniendo noticias de la reserva biologica...');
+        return this.fetchCollection();
+    }
+
+}
+
+export class PhotosService extends ApiResourceService<PhotoItem[]> {
+
+    constructor() {
+        super('https://jsonplaceholder.typicode.com/photos');
+    }
+
+    // Para agregar otro recurso remoto basta crear un nuevo servicio especializado.
+    async getGallery() {
+        return this.fetchCollection();
+    }
+
 }
