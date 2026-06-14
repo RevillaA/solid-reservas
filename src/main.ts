@@ -1,6 +1,7 @@
 import './style.css'
 import { ProductBloc } from './01-srp/product-bloc'
 import { NewsService, PhotosService } from './02-ocp/news-service'
+import { Audi, Ford, Honda, Tesla, Toyota, VehicleManager } from './03-lsp/vehicle-manager'
 import { PostService } from './05-dip/post-service'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
@@ -9,6 +10,13 @@ const productBloc = new ProductBloc()
 const newsService = new NewsService()
 const photosService = new PhotosService()
 const postService = new PostService()
+const vehicles = [
+  new Tesla('Model X'),
+  new Audi('A4'),
+  new Toyota('Prius'),
+  new Honda('Civic'),
+  new Ford('Ranger'),
+]
 
 app.innerHTML = `
   <h1>CleanCode y SOLID</h1>
@@ -29,6 +37,9 @@ async function bootstrap() {
 
   console.log('Noticias cargadas:', news.slice(0, 2))
   console.log('Galeria cargada:', gallery.slice(0, 2))
+
+  // Prueba del modulo LSP tratando todos los vehiculos por el mismo contrato.
+  VehicleManager.printVehicleDetails(vehicles)
 
   // Prueba del modulo DIP para confirmar que el proyecto ejecuta codigo visible.
   const posts = await postService.getPosts()

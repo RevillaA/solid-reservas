@@ -54,3 +54,23 @@ Ahora es posible agregar nuevos servicios de recursos remotos creando otra clase
 que extienda `ApiResourceService`, sin tener que reabrir ni alterar la lógica
 principal ya existente. Eso mejora la escalabilidad del módulo y evita cambios
 innecesarios en código estable.
+
+## LSP - Liskov Substitution Principle
+
+### Antes
+El módulo de vehículos obligaba al cliente a distinguir cada marca mediante validaciones
+concretas. `VehicleManager` dependía de `instanceof` para decidir cómo imprimir los
+detalles de `Tesla`, `Audi`, `Toyota`, `Honda` y `Ford`, por lo que las implementaciones
+no podían sustituirse libremente bajo un mismo contrato.
+
+### Cambio realizado
+Se definió un contrato común mediante la clase abstracta `Vehicle`, encargada de
+representar el comportamiento esperado por el sistema. Cada vehículo pasó a implementar
+el método `getDetails()`, de modo que la lógica específica de cada marca quedó dentro
+de su propia clase y no en el gestor.
+
+### Después
+Las implementaciones pueden sustituirse sin alterar el funcionamiento del sistema.
+`VehicleManager` ahora trabaja contra el contrato `Vehicle` y puede procesar cualquier
+vehículo derivado sin conocer su tipo concreto. Esto respeta el principio de sustitución,
+simplifica el flujo del cliente y hace más mantenible la jerarquía.

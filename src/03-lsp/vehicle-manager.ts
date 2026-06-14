@@ -1,45 +1,62 @@
-
 /**
- * VIOLACIÓN AL PRINCIPIO DE SUSTITUCIÓN DE LISKOV (LSP)
- * 
- * En la flota de la reserva, intentamos manejar diversos vehículos.
- * Sin embargo, el cliente se ve obligado a conocer los detalles internos
- * de cada marca para poder operar, rompiendo la transparencia de la abstracción.
+ * Todos los vehiculos exponen el mismo contrato para que el cliente
+ * pueda tratarlos de forma uniforme.
  */
+export abstract class Vehicle {
 
-export class Tesla { constructor(public model: string) {} }
-export class Audi  { constructor(public model: string) {} }
-export class Toyota{ constructor(public model: string) {} }
-export class Honda { constructor(public model: string) {} }
-export class Ford  { constructor(public model: string) {} }
+    constructor(public readonly model: string) {}
+
+    // Cada implementacion describe su comportamiento sin exigir validaciones externas.
+    abstract getDetails(): string;
+
+}
+
+export class Tesla extends Vehicle {
+
+    getDetails() {
+        return `Tesla Model: ${this.model} Carga electrica al 100%`;
+    }
+
+}
+
+export class Audi extends Vehicle {
+
+    getDetails() {
+        return `Audi Model: ${this.model} Traccion Quattro activada`;
+    }
+
+}
+
+export class Toyota extends Vehicle {
+
+    getDetails() {
+        return `Toyota Model: ${this.model} Motor hibrido listo`;
+    }
+
+}
+
+export class Honda extends Vehicle {
+
+    getDetails() {
+        return `Honda Model: ${this.model} VTEC activado`;
+    }
+
+}
+
+export class Ford extends Vehicle {
+
+    getDetails() {
+        return `Ford Model: ${this.model} Built Tough`;
+    }
+
+}
 
 export class VehicleManager {
 
-    /**
-     * VIOLACIÓN: Este método rompe LSP y OCP. 
-     * Si agregamos una nueva marca (ej. Volvo), debemos venir aquí a agregar otro 'if' o 'case'.
-     * Además, no podemos tratar a todos los vehículos por igual.
-     */
-    static printVehicleDetails( vehicles: (Tesla | Audi | Toyota | Honda | Ford)[] ) {
-        
-        vehicles.forEach( vehicle => {
-
-            if( vehicle instanceof Tesla ) {
-                console.log('Tesla Model:', vehicle.model, 'Carga eléctrica al 100%');
-            }
-            if( vehicle instanceof Audi ) {
-                console.log('Audi Model:', vehicle.model, 'Tracción Quattro activada');
-            }
-            if( vehicle instanceof Toyota ) {
-                console.log('Toyota Model:', vehicle.model, 'Motor híbrido listo');
-            }
-            if( vehicle instanceof Honda ) {
-                console.log('Honda Model:', vehicle.model, 'VTEC activado');
-            }
-            if( vehicle instanceof Ford ) {
-                console.log('Ford Model:', vehicle.model, 'Built Tough');
-            }
-
+    // El gestor depende del contrato comun, por eso cualquier Vehicle puede sustituirse sin cambiar este flujo.
+    static printVehicleDetails(vehicles: Vehicle[]) {
+        vehicles.forEach(vehicle => {
+            console.log(vehicle.getDetails());
         });
     }
 
