@@ -34,6 +34,15 @@ Cada clase tiene una responsabilidad más clara y limitada.
 `CustomerNotifier` encapsula el envío de mensajes. Esto mejora la legibilidad,
 reduce el acoplamiento y facilita el mantenimiento del módulo.
 
+### Reflexión
+Si mañana la reserva decide notificar por WhatsApp en lugar de Email, antes habría sido necesario
+modificar directamente `ProductBloc`, porque la lógica de notificación estaba mezclada con la gestión
+de productos. En el diseño actual, el cambio queda concentrado en `CustomerNotifier`, ya que `ProductBloc`
+sigue cumpliendo solo el rol de coordinación. En términos prácticos, se pasa de intervenir una clase
+que mezclaba responsabilidades de negocio e infraestructura a intervenir únicamente la clase encargada
+del canal de comunicación. La refactorización no elimina por completo el cambio, pero sí lo aísla en el
+lugar correcto.
+
 ## OCP - Open/Closed Principle
 
 ### Antes
@@ -55,6 +64,15 @@ que extienda `ApiResourceService`, sin tener que reabrir ni alterar la lógica
 principal ya existente. Eso mejora la escalabilidad del módulo y evita cambios
 innecesarios en código estable.
 
+### Reflexión
+En esta implementación, la mejora de OCP no se orientó a una migración de `axios` hacia `fetch`,
+sino a evitar que la lógica común de consumo HTTP se repitiera en cada servicio. Por eso, si se
+detectara una vulnerabilidad en la mecánica compartida de acceso remoto, el ajuste sería más rápido
+que antes: bastaría intervenir la base `ApiResourceService` en lugar de reescribir cada servicio por
+separado. Aunque el proyecto actual ya trabaja con `fetch`, la reflexión válida es que el diseño
+centraliza el comportamiento reutilizable y reduce la cantidad de puntos a modificar cuando una decisión
+técnica transversal cambia con urgencia.
+
 ## LSP - Liskov Substitution Principle
 
 ### Antes
@@ -75,6 +93,14 @@ Las implementaciones pueden sustituirse sin alterar el funcionamiento del sistem
 vehículo derivado sin conocer su tipo concreto. Esto respeta el principio de sustitución,
 simplifica el flujo del cliente y hace más mantenible la jerarquía.
 
+### Reflexión
+Si la reserva adquiere un `Dron`, el `VehicleManager` podría procesarlo sin agregar nuevos
+`if` o `else`, siempre que esa nueva clase respete el contrato definido por `Vehicle` e
+implemente `getDetails()`. Antes de la refactorización, el gestor dependía de reconocer cada
+marca de forma explícita, así que cualquier incorporación obligaba a modificar el flujo central.
+Ahora la extensión ocurre por sustitución: el manager no necesita saber qué tipo concreto recibe,
+solo necesita confiar en el comportamiento prometido por la abstracción común.
+
 ## ISP - Interface Segregation Principle
 
 ### Antes
@@ -94,6 +120,14 @@ Las interfaces quedaron más precisas y cada módulo depende solo de lo que real
 Las aves ya no implementan métodos innecesarios, se evita comportamiento artificial
 y el diseño queda preparado para agregar nuevas especies respetando sus capacidades reales.
 
+### Reflexión
+Con el diseño actual, un `Pingüino` no tendría por qué declarar un método `fly()` que lance
+errores, porque ya no existe una interfaz general que obligue a todas las aves a volar. En su
+lugar, la clase solo implementaría los contratos que realmente le correspondan, por ejemplo
+`EaterBird` y `SwimmingBird`. La diferencia crítica respecto al diseño anterior es que el modelo
+deja de forzar comportamientos falsos y pasa a describir capacidades reales, lo que evita código
+defensivo y excepciones artificiales.
+
 ## DIP - Dependency Inversion Principle
 
 ### Antes
@@ -111,3 +145,11 @@ El módulo principal quedó desacoplado de las implementaciones concretas.
 `PostService` depende de una abstracción y puede operar con cualquier proveedor compatible
 sin modificar su lógica interna. Esto reduce el acoplamiento y facilita cambiar la fuente
 de datos sin reabrir el servicio.
+
+### Reflexión
+Inyectar un `MockDatabase` para pruebas unitarias ahora es mucho más directo, porque `PostService`
+ya no crea su dependencia internamente. Basta con proporcionar una clase u objeto que implemente
+`PostProvider` y devuelva los datos controlados por la prueba. Antes, esa sustitución era incómoda
+porque el servicio estaba acoplado a `LocalDatabaseService` y no ofrecía un punto de entrada para
+reemplazarlo. Después de la refactorización, la prueba puede centrarse en el comportamiento de
+`PostService` sin depender de una fuente real de datos.
