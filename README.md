@@ -12,3 +12,14 @@ Para ejecutar el proyecto, simplemente ejecuten
 ```
 npm run dev
 ```
+
+## SRP - Single Responsibility Principle
+
+### Antes
+El código tenía responsabilidades mezcladas.
+
+### Cambio realizado
+Se separó la lógica en clases/servicios más específicos.
+
+### Después
+Cada módulo tiene una responsabilidad más clara.
