@@ -2,6 +2,7 @@ import './style.css'
 import { ProductBloc } from './01-srp/product-bloc'
 import { NewsService, PhotosService } from './02-ocp/news-service'
 import { Audi, Ford, Honda, Tesla, Toyota, VehicleManager } from './03-lsp/vehicle-manager'
+import { BirdCatalog, Hummingbird, Ostrich, Toucan } from './04-isp/bird-catalog'
 import { PostService } from './05-dip/post-service'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
@@ -17,6 +18,9 @@ const vehicles = [
   new Honda('Civic'),
   new Ford('Ranger'),
 ]
+const toucan = new Toucan()
+const hummingbird = new Hummingbird()
+const ostrich = new Ostrich()
 
 app.innerHTML = `
   <h1>CleanCode y SOLID</h1>
@@ -40,6 +44,11 @@ async function bootstrap() {
 
   // Prueba del modulo LSP tratando todos los vehiculos por el mismo contrato.
   VehicleManager.printVehicleDetails(vehicles)
+
+  // Prueba del modulo ISP usando contratos pequenos segun la capacidad de cada ave.
+  BirdCatalog.showEating([toucan, hummingbird, ostrich])
+  BirdCatalog.showFlying([toucan, hummingbird])
+  BirdCatalog.showSwimming([ostrich])
 
   // Prueba del modulo DIP para confirmar que el proyecto ejecuta codigo visible.
   const posts = await postService.getPosts()
